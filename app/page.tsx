@@ -13,37 +13,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-pearlWhite">
-      {/* Sidebar */}
-      <Sidebar
-        activeItem="overview"
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-
-      {/* Top bar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <TopBar onMenuToggle={() => setSidebarOpen(true)} />
-
-      {/* Main content */}
-      <main className="pt-14">
+      <main className="ml-0 md:ml-[260px] pt-14">
         <div className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-4 sm:space-y-6">
-          {/* Page title */}
           <div className="mb-1 sm:mb-2">
             <h1 className="text-base sm:text-lg font-semibold text-oceanSlate">Overview</h1>
             <p className="text-[11px] sm:text-xs text-mutedText mt-0.5 font-mono">
               All systems operational
             </p>
           </div>
-
-          {/* System status hero */}
           <SystemStatus />
-
-          {/* Two-column layout */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
             <AgentGrid />
             <ActivityFeed />
           </div>
-
-          {/* Mission queue - full width */}
           <MissionQueue />
         </div>
       </main>

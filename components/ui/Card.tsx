@@ -1,14 +1,13 @@
-"use client";
-
 import React from "react";
 
 interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  style?: React.CSSProperties;
 }
 
-export const Card: React.FC<CardProps> = ({ children, className = "", hover = true }) => {
+export const Card: React.FC<CardProps> = ({ children, className = "", hover = true, style }) => {
   return (
     <div
       className={`
@@ -16,6 +15,7 @@ export const Card: React.FC<CardProps> = ({ children, className = "", hover = tr
         ${hover ? "shadow-card hover:shadow-card-hover transition-shadow duration-200" : "shadow-card"}
         ${className}
       `}
+      style={style}
     >
       {children}
     </div>

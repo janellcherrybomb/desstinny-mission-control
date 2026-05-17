@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Cpu,
@@ -15,20 +17,19 @@ import {
 } from "lucide-react";
 
 interface SidebarProps {
-  activeItem?: string;
-  onNavigate?: (item: string) => void;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
 const navItems = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "agents", label: "Agents", icon: Cpu },
-  { id: "missions", label: "Missions", icon: Target },
-  { id: "automations", label: "Automations", icon: Workflow },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "logs", label: "Logs", icon: FileText },
-  { id: "settings", label: "Settings", icon: Settings },
+  { id: "overview", label: "Overview", icon: LayoutDashboard, href: "/" },
+  { id: "agents", label: "Agents", icon: Cpu, href: "/agents" },
+  { id: "events", label: "Events", icon: Target, href: "/events" },
+  { id: "missions", label: "Missions", icon: Workflow, href: "/missions" },
+  { id: "automations", label: "Automations", icon: Target, href: "/automations" },
+  { id: "analytics", label: "Analytics", icon: BarChart3, href: "/analytics" },
+  { id: "logs", label: "Logs", icon: FileText, href: "/logs" },
+  { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 
 const PixelStarfish: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -53,35 +54,26 @@ const PixelStarfish: React.FC<{ size?: number }> = ({ size = 16 }) => (
   </svg>
 );
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  activeItem = "overview",
-  onNavigate,
-  isOpen = false,
-  onClose,
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
+  const pathname = usePathname();
   const online = true;
   const uptime = "4h 23m";
   const version = "0.1.0";
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      {/* Header with close button on mobile */}
+      {/* Header */}
       <div className="px-5 pt-6 pb-4 border-b border-champagne/50">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-3">
             <div className="relative">
               <PixelStarfish size={20} />
-              <span
-                className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${
-                  online ? "bg-success animate-breathe" : "bg-mutedText"
-                }`}
-              />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-success animate-breathe" />
             </div>
             <span className="text-sm font-semibold text-oceanSlate tracking-tight">
               Desstinny
             </span>
           </div>
-          {/* Close button — visible only on mobile drawer */}
           <button
             onClick={onClose}
             className="md:hidden p-1 rounded-lg hover:bg-pearlWhite text-mutedText transition-colors"
@@ -96,18 +88,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {navItems.map(({ id, label, icon: Icon }) => {
-          const isActive = activeItem === id;
+        {navItems.map(({ id, label, icon: Icon, href }) => {
+          const isActive =
+            href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
-            <button
+            <Link
               key={id}
-              onClick={() => {
-                onNavigate?.(id);
-                onClose?.();
-              }}
+              href={href}
+              onClick={onClose}
               className={`
                 w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
-                transition-all duration-200 group
+                transition-all duration-200 group block
                 ${
                   isActive
                     ? "bg-seafoamMist/70 text-oceanSlate shadow-glow"
@@ -118,14 +109,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <Icon
                 strokeWidth={isActive ? 2 : 1.5}
                 className={`w-[18px] h-[18px] transition-colors duration-200 shrink-0 ${
-                  isActive ? "text-softTeal" : "text-mutedText group-hover:text-oceanSlate"
+                  isActive
+                    ? "text-softTeal"
+                    : "text-mutedText group-hover:text-oceanSlate"
                 }`}
               />
               <span className="font-medium">{label}</span>
               {isActive && (
                 <span className="ml-auto w-1.5 h-1.5 rounded-full bg-softTeal animate-breathe" />
               )}
-            </button>
+            </Link>
           );
         })}
       </nav>
@@ -158,13 +151,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* Sidebar */}
-      <aside className={`
-        fixed top-0 left-0 h-full w-[260px] bg-softIvory border-r border-champagne/70 flex-col z-50
-        md:flex 
-        ${isOpen ? "flex translate-x-0" : "-translate-x-full"}
-        md:translate-x-0 md:z-30
-        transition-transform duration-300 ease-out
-      `}>
+      <aside
+        className={`
+          fixed top-0 left-0 h-full w-[260px] bg-softIvory border-r border-champagne/70 flex-col z-50
+          md:flex
+          ${isOpen ? "flex translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:z-30
+          transition-transform duration-300 ease-out
+        `}
+      >
         {sidebarContent}
       </aside>
     </>
