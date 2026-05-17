@@ -1,18 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Search, Command, Bell, User, Menu } from "lucide-react";
-import { CommandPalette } from "../dashboard/CommandPalette";
+import { CommandPalette } from "@/components/dashboard/CommandPalette";
 
-interface TopBarProps {
-  onMenuToggle: () => void;
-}
-
-export const TopBar: React.FC<TopBarProps> = ({ onMenuToggle }) => {
+export const TopBar: React.FC<{ onMenuToggle: () => void }> = ({ onMenuToggle }) => {
   const [showPalette, setShowPalette] = useState(false);
-
-  const openPalette = () => setShowPalette(true);
-  const closePalette = () => setShowPalette(false);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -28,17 +21,14 @@ export const TopBar: React.FC<TopBarProps> = ({ onMenuToggle }) => {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 md:left-[260px] h-14 bg-softIvory/80 backdrop-blur-md border-b border-champagne/60 z-20 flex items-center px-4 md:px-6 gap-3 md:gap-4">
-        {/* Mobile hamburger */}
         <button
           onClick={onMenuToggle}
           className="md:hidden p-2 rounded-lg hover:bg-pearlWhite text-mutedText hover:text-oceanSlate transition-colors"
         >
           <Menu className="w-[18px] h-[18px]" />
         </button>
-
-        {/* Search / Command bar */}
         <button
-          onClick={openPalette}
+          onClick={() => setShowPalette(true)}
           className="hidden sm:flex flex-1 max-w-lg items-center gap-2 px-3 py-1.5 rounded-lg bg-pearlWhite border border-champagne/80 text-mutedText text-sm hover:border-softTeal/40 hover:bg-seafoamMist/20 transition-all duration-200"
         >
           <Search className="w-4 h-4 text-mutedText/60" />
@@ -47,8 +37,6 @@ export const TopBar: React.FC<TopBarProps> = ({ onMenuToggle }) => {
             <Command className="w-3 h-3" />K
           </kbd>
         </button>
-
-        {/* Right side */}
         <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
           <button className="p-2 rounded-lg hover:bg-pearlWhite text-mutedText hover:text-oceanSlate transition-all duration-200 relative">
             <Bell className="w-[18px] h-[18px]" />
@@ -59,8 +47,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onMenuToggle }) => {
           </button>
         </div>
       </header>
-
-      {showPalette && <CommandPalette onClose={closePalette} />}
+      {showPalette && <CommandPalette onClose={() => setShowPalette(false)} />}
     </>
   );
 };
